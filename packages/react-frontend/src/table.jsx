@@ -1,6 +1,4 @@
 import React from "react";
-import { ImCross } from "react-icons/im";
-import { TiDelete } from "react-icons/ti";
 
 function TableHeader() {
     return (
@@ -8,7 +6,7 @@ function TableHeader() {
             <tr>
                 <td>Name</td>
                 <td>Jobs</td>
-                <td></td>
+                <td>Delete</td>
             </tr>
         </thead>
     );
@@ -21,12 +19,8 @@ function TableBody(props) {
                 <td>{row.name}</td>
                 <td>{row.job}</td>
                 <td>
-                    <button style={{
-                        backgroundColor: "transparent",
-                        border : "None"}} 
-                        onClick={() => props.removeCharacter(index)}>
-                        
-                        <ImCross color="black" backcov/>
+                    <button onClick={() => props.removeCharacter(index)}>
+                        delete
                     </button>
                 </td>
             </tr>
