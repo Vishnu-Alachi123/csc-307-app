@@ -4,12 +4,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vite"
+    "dev": "npm --workspace react-frontend run dev"
   },
   "author": "",
   "license": "ISC",
   "description": "",
-  "workspaces" : [
+  "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "react-icons": "^5.5.0"
+  }
 }
