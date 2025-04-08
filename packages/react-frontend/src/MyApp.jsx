@@ -2,6 +2,7 @@ import React,{useState} from "react";
 import Table from "./table";
 import Form from "./form";
 
+
 function MyApp() {
     const [characters, setCharacters] = useState([]);
     
@@ -11,14 +12,21 @@ function MyApp() {
         });
         setCharacters(updated);
     }
+
+    function updateList(person){
+        setCharacters([...characters,person]);
+    }
+
     return (
         <div className="container">
             <Table 
             CharacterData = {characters}
             removeCharacter = {removeOneCharacter}
             />
-            <Form />
+            <Form handleSubmit = {updateList}/>
         </div>
     );
 }
+
+
 export default MyApp;   
