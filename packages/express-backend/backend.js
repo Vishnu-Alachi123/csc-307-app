@@ -35,21 +35,35 @@ const users = {
   
 app.use(express.json());
 
-const findUserbyName = (name) =>  {
+const findUserByName = (name) =>  {
     return users["users_list"].filter(
-        (user) => user["name"] = name);
+        (user) => user["name"] === name);
 };
 
-app.get("/users", (req,res) => {
-    const name = req.query.name;
-    if (name != undefined) {
-        let result = findUserbyName(name);
-        result = {users_list: result};
-        res.send(result);
+const findUserByID = (id) => 
+    users["users_list"].find((user) => user["id"] === id);
+
+app.get("/users/:id", (req,res) => {
+    const id = req.params["id"];
+    let result = findUserByID(id);
+    if (result === undefined) {
+        res.status(404).send("Resource not Found");
     } else {
-        res.send(users);
+        res.send(result);
     }
-});
+})
+
+
+// app.get("/users", (req,res) => {
+//     const name = req.query.name;
+//     if (name != undefined) {
+//         let result = findUserByName(name);
+//         result = {users_list: result};
+//         res.send(result);
+//     } else {
+//         res.send(users);
+//     }
+// });
 
 app.listen(port, ()=> {
     console.log(`Example app listening at http://localhost:${port}`
