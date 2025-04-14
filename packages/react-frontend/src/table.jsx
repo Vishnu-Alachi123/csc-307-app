@@ -1,6 +1,6 @@
 import React from "react";
 import { ImCross } from "react-icons/im";
-import { TiDelete } from "react-icons/ti";
+
 
 function TableHeader() {
     return (
