@@ -4,15 +4,24 @@ import Form from "./form";
 
 
 
+
 function MyApp() {
     const [characters, setCharacters] = useState([]);
     const [showForm,setShowForm] = useState([]);
     
-    function removeOneCharacter(index) {
-        const updated = characters.filter((character, i) => {
-            return i !== index;    
-        });
-        setCharacters(updated);
+    function removeOneCharacter(person) {
+        const id = person.id;
+        const promise = fetch(`http://localhost:8000/users/${id}`,{
+            method: "DELETE"
+        }).then( (res) => {
+            if(res.status === 204){
+                setCharacters(characters.filter((char) => char.id !== id));
+            }else {
+                console.log(`Failed to deleted user. Status : ${res.status}`)
+            }
+        })
+        .catch((error) => console.log(error))
+        return promise
     }
 
     function toggleForm() { 
@@ -46,8 +55,20 @@ function MyApp() {
     }
 
     function updateList(person) {
-        console.log(person)
-        postUser(person).then( () => setCharacters([...characters, person]))
+        console.log(person);
+        postUser(person).then((res) => 
+            {
+                if(res.status ===201){
+                    return res.json();
+                    //setCharacters([...characters, person]);
+                }else{
+                    console.log(`Post failed due to error ${res.status}`);
+                };
+            })
+        .then((data) => {
+            setCharacters([...characters, data]);
+            console.log(data);
+            })
         .catch((error) => {
             console.log(error);
         })

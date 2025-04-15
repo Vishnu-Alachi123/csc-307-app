@@ -1,7 +1,6 @@
 import React from "react";
 import { ImCross } from "react-icons/im";
 
-
 function TableHeader() {
     return (
         <thead>
@@ -24,7 +23,7 @@ function TableBody(props) {
                     <button style={{
                         backgroundColor: "transparent",
                         border : "None"}} 
-                        onClick={() => props.removeCharacter(index)}>
+                        onClick={() => props.removeCharacter(props.CharacterData[index])}>
                         
                         <ImCross color="black" backcov/>
                     </button>

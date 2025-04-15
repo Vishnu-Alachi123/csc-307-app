@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 
 const app = express();
@@ -50,6 +50,19 @@ const findUserByNameJob = (name,job) => {
         (user) => user["name"] === name && user["job"] === job);
 }
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
+function createId(user) {
+    let id;
+    do {
+        id = getRandomInt(0,1000).toString();
+    } 
+    while(users.users_list.find((u) => u.id===id));
+    user.id = id;
+}
+
 app.get("/users", (req, res) => {
     res.send(users);
   });
@@ -90,6 +103,7 @@ app.get("/users", (req,res) => {
 
 
 const addUser = (user) => {
+    createId(user);
     users["users_list"].push(user);
     return user;
 };
@@ -105,14 +119,14 @@ const deleteUser = (id) => {
 app.post("/users",(req,res) =>{
     const UsertoAdd = req.body;
     addUser(UsertoAdd);
-    res.send();
+    res.status(201).send(UsertoAdd);
 });
 
 app.delete("/users/:id", (req, res) => {
     const userId = req.params.id;
     const success = deleteUser(userId);
     if(success){
-        res.status(200).send(`User with id ${userId} deleted.`)
+        res.status(204).send(`User with id ${userId} deleted.`)
     }else {
         res.status(404).send("User not found.");
     }
