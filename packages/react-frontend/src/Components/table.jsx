@@ -1,13 +1,14 @@
 import React from "react";
 import { ImCross } from "react-icons/im";
+import './table.css';
 
 function TableHeader() {
     return (
         <thead>
             <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Jobs</td>
+                <td className="table-title">ID</td>
+                <td className="table-title">Name</td>
+                <td className="table-title">Jobs</td>
                 <td></td>
             </tr>
         </thead>
@@ -43,11 +44,14 @@ function TableBody(props) {
 
 function Table(props) {
     return(
-        <table>
-            <TableHeader/>
-            <TableBody CharacterData = {props.CharacterData}
-            removeCharacter = {props.removeCharacter}/>
-        </table>
+        <div className="table_container">
+            <table>
+                <TableHeader/>
+                <TableBody CharacterData = {props.CharacterData}
+                    removeCharacter = {props.removeCharacter}/>
+            </table>
+        </div>
+        
     )
 }
 export default Table;

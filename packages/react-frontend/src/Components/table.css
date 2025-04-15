@@ -1,0 +1,12 @@
+.table_container{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    margin: 10px;
+    border: 2px solid black;
+}
+
+.table-title{
+    font-size: 20px;
+    font-weight: 600;
+}

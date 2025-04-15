@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from "react";
-import Table from "./table";
-import Form from "./form";
+import Table from "./Components/table";
+import Form from "./Components/form";
+import "./main.css"
 
 
 
@@ -79,7 +80,7 @@ function MyApp() {
             CharacterData = {characters}
             removeCharacter = {removeOneCharacter}
             />
-            <button onClick={toggleForm}>
+            <button className="hide_button" onClick={toggleForm}>
                 {showForm ? "Hide Form" : "Add Job"}
             </button>
 
