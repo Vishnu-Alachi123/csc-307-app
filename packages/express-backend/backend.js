@@ -1,135 +1,135 @@
 import express, { json } from "express";
 import cors from "cors";
+// import {
+//     addUser,
+//     getUsers,
+//     findUserById,
+//     findUserByName,
+//     findUserByJob,
+//     deleteUserById,
+//     findUserByNameAndJob} from  "./Users/user-services.js";
+
+import userService from "./Users/user-services.js";
+const {
+    addUser,
+    getUsers,
+    findUserById,
+    findUserByName,
+    findUserByJob,
+    deleteUserById,
+    findUserByNameAndJob
+} = userService;
+
 
 const app = express();
 const port = 8000;
 
-const users = {
-    users_list: [
-      {
-        id: "xyz789",
-        name: "Charlie",
-        job: "Janitor"
-      },
-      {
-        id: "abc123",
-        name: "Mac",
-        job: "Bouncer"
-      },
-      {
-        id: "ppp222",
-        name: "Mac",
-        job: "Professor"
-      },
-      {
-        id: "yat999",
-        name: "Dee",
-        job: "Aspring actress"
-      },
-      {
-        id: "zap555",
-        name: "Dennis",
-        job: "Bartender"
-      }
-    ]
-  };
+// const users = {
+//     users_list: [
+//       {
+//         id: "xyz789",
+//         name: "Charlie",
+//         job: "Janitor"
+//       },
+//       {
+//         id: "abc123",
+//         name: "Mac",
+//         job: "Bouncer"
+//       },
+//       {
+//         id: "ppp222",
+//         name: "Mac",
+//         job: "Professor"
+//       },
+//       {
+//         id: "yat999",
+//         name: "Dee",
+//         job: "Aspring actress"
+//       },
+//       {
+//         id: "zap555",
+//         name: "Dennis",
+//         job: "Bartender"
+//       }
+//     ]
+//   };
   
 app.use(cors());
 app.use(express.json());
-
-const findUserByName = (name) =>  {
-    return users["users_list"].filter(
-        (user) => user["name"] === name);
-};
-
-const findUserByID = (id) => 
-    users["users_list"].find((user) => user["id"] === id);
-
-const findUserByNameJob = (name,job) => {
-    return users["users_list"].filter(
-        (user) => user["name"] === name && user["job"] === job);
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  
-function createId(user) {
-    let id;
-    do {
-        id = getRandomInt(0,1000).toString();
-    } 
-    while(users.users_list.find((u) => u.id===id));
-    user.id = id;
-}
-
-app.get("/users", (req, res) => {
-    res.send(users);
-  });
   
 app.get("/users", (req,res) => {
     const name = req.query.name;
     const job = req.query.job;
-    let result = findUserByNameJob(name,job);
-    if (result === undefined) {
-        res.status(404).send("Resource not Found");
-    } else {
-        res.send(result);
-    }
-})
+    if(name && job)
+    {
+        findUserByNameAndJob(name,job)
+        .then((users) => {
+            if(users && users.length > 0) {
+                res.status(200).send({ users_list: users }); // Send the filtered result
+        } else {
+          res.status(404).send("User not found with the specified name and job.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error while fetching user by name and job:", error);
+        res.status(500).send("Error fetching user from database.");
+      });
+    } 
+    else {
+    getUsers(name, job)
+      .then((users) => {
+        res.send({ users_list: users });
+      })
+      .catch((error) => {
+        console.error("Error while fetching users:", error);
+        res.status(500).send("Error fetching users from database.");
+      });
+  }
+});
 
 app.get("/users/:id", (req,res) => {
     const id = req.params["id"];
-    let result = findUserByID(id);
-    if (result === undefined) {
-        res.status(404).send("Resource not Found");
-    } else {
-        res.send(result);
-    }
+    findUserById(id)
+    .then((user) => {
+        if(user) {res.send(user)}
+        else(res.status(404).send("User not found in database"))
+    })
+    .catch((error) => {
+        console.error("Error while finding user : ", error);
+        res.status(404).send("Error while finding user in database")
+    })
 })
 
-
-app.get("/users", (req,res) => {
-    const name = req.query.name;
-    if (name != undefined) {
-        let result = findUserByName(name);
-        result = {users_list: result};
-        res.send(result);
-    } else {
-        res.send(users);
-    }
-});
-
-
-
-const addUser = (user) => {
-    createId(user);
-    users["users_list"].push(user);
-    return user;
-};
- 
-const deleteUser = (id) => {
-    const index = users["users_list"].findIndex((user) => user.id === id);
-    if ( index !== -1){
-        users["users_list"].splice(index,1);
-        return true;
-    }
-    return false;
-}
 app.post("/users",(req,res) =>{
-    const UsertoAdd = req.body;
-    addUser(UsertoAdd);
-    res.status(201).send(UsertoAdd);
+    const new_user = req.body;
+    addUser(new_user)
+    .then((added_user) => {
+        res.status(201).send(added_user)
+    })
+    .catch((error) => {
+        console.error("Error while inserting user in Database :",error);
+        res.status(500).send("Error while inserting user")
+    })
 });
 
 app.delete("/users/:id", (req, res) => {
     const userId = req.params.id;
-    const success = deleteUser(userId);
-    if(success){
-        res.status(204).send(`User with id ${userId} deleted.`)
-    }else {
-        res.status(404).send("User not found.");
-    }
+    deleteUserById(userId)
+    .then((deleteduser) => {
+        if(deleteduser)
+        {
+            res.status(204).send(`User with id ${userId} deleted.`)
+        }
+        else 
+        {
+            res.status(404).send(`User with id ${userId} not found.`);
+        }
+    })
+    .catch((error) => 
+    {
+        console.error(`Error while deleting user with id ${userId}:`, error);
+        res.status(500).send("Error while deleting user");
+    })
 });
 
 

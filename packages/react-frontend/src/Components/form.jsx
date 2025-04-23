@@ -26,7 +26,7 @@ function Form(props) {
                 <input
                     type = "text"
                     name="name"
-                    id = "name"
+                    _id = "name"
                     onChange={HandleChange}
                     value={person.name}
                 />
@@ -34,7 +34,7 @@ function Form(props) {
                 <input
                     type = "text"
                     name="job"
-                    id = "job"
+                    _id = "job"
                     onChange={HandleChange}
                     value={person.job}
                 />

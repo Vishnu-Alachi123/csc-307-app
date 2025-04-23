@@ -11,12 +11,12 @@ function MyApp() {
     const [showForm,setShowForm] = useState([]);
     
     function removeOneCharacter(person) {
-        const id = person.id;
-        const promise = fetch(`http://localhost:8000/users/${id}`,{
+        const _id = person._id;
+        const promise = fetch(`http://localhost:8000/users/${_id}`,{
             method: "DELETE"
         }).then( (res) => {
             if(res.status === 204){
-                setCharacters(characters.filter((char) => char.id !== id));
+                setCharacters(characters.filter((char) => char._id !== _id));
             }else {
                 console.log(`Failed to deleted user. Status : ${res.status}`)
             }
